@@ -1,18 +1,15 @@
 import React from "react";
-import { redirect as Redirect , Route } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-function PrivateRoute({ component: Component, ...rest }) {
+const PrivateRoute = ({ component: Component }) => {
   const isAuthenticated = localStorage.getItem("token");
-  return (
-    <div>
-      <Route
-        {...rest}
-        render={(props) =>
-          isAuthenticated ? <Component {...props} /> : <Redirect to="/login" />
-        }
-      />
-    </div>
-  );
-}
+
+  if (!Component) {
+    console.error("Component is undefined in PrivateRoute");
+    return null;
+  }
+
+  return isAuthenticated ? <Component /> : <Navigate to="/login" />;
+};
 
 export default PrivateRoute;

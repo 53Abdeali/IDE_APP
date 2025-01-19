@@ -2,7 +2,12 @@ import Ide from "./components/Ide";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import PrivateRoute from "./components/PrivateRoute";
-import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
 function App() {
   return (
@@ -11,14 +16,7 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/ide"
-          element={
-            <PrivateRoute>
-              <Ide />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/ide" element={<PrivateRoute component={Ide} />} />
       </Routes>
     </Router>
   );

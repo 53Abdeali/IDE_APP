@@ -5,22 +5,45 @@ import axios from "axios";
 import FetchHistory from "./FetchHistory";
 
 function Ide() {
-  const [code, setCode] = useState(`public class Main{
-    public static void main(String [] args){
+  const [code, setCode] = useState(`public class Main {
+    public static void main(String[] args) {
         System.out.println("Hello World!");
-      }
-    }`);
-
+    }
+  }`);
   const [output, setOutput] = useState("");
 
-  const handleRun = async () => {
+  const handleRun = async (e) => {
+    e.preventDefault();
+
     try {
-      const res = await axios.post("http://localhost:8080/api/execute", {
-        code: code,
-      });
-      setOutput(res.data);
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        setOutput("Authentication Error: Please log in to execute code.");
+        console.error("No token found");
+        return;
+      }
+
+      const codeToExecute = { code };
+
+      const response = await axios.post(
+        "http://localhost:8080/api/execute",
+        codeToExecute,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setOutput(response.data.output);
+      console.log("Execution Result:", response.data);
     } catch (err) {
-      setOutput("Error Executing Code", err);
+      setOutput(
+        `Error Executing Code: ${
+          err.response ? err.response.data.message : err.message
+        }`
+      );
       console.error("Execution Error:", err);
     }
   };
@@ -51,7 +74,7 @@ function Ide() {
         {output || "Click 'Run Code' to see the output here..."}
       </pre>
 
-      <FetchHistory/>
+      <FetchHistory />
     </div>
   );
 }
