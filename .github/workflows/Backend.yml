@@ -19,7 +19,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: Build Backend with Maven
       run: mvn clean package
 
     - name: Update dependency graph
