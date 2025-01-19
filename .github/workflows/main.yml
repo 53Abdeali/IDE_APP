@@ -1,0 +1,59 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend:
+    name: Build and Test Maven Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+
+      - name: Build Maven Project
+        working-directory: IDE/IDEBack
+        run: mvn clean install
+
+
+      - name: Run Tests
+        working-directory: IDE/IDEBack
+        run: mvn test
+
+  frontend:
+    name: Build and Test Node.js Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        working-directory: IDE/online-ide
+        run: npm install
+
+      - name: Build Frontend
+        working-directory: IDE/online-ide
+        run: npm run build
+
+      - name: Run Tests
+        working-directory: IDE/online-ide
+        run: npm test
