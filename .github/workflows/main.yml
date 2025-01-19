@@ -25,12 +25,12 @@ jobs:
 
 
       - name: Build Maven Project
-        working-directory: IDE/IDEBack
+        working-directory: IDE
         run: mvn clean install
 
 
       - name: Run Tests
-        working-directory: IDE/IDEBack
+        working-directory: IDE
         run: mvn test
 
   frontend:
@@ -47,13 +47,13 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        working-directory: IDE/online-ide
+        working-directory: online-ide
         run: npm install
 
       - name: Build Frontend
-        working-directory: IDE/online-ide
+        working-directory: online-ide
         run: npm run build
 
       - name: Run Tests
-        working-directory: IDE/online-ide
+        working-directory: online-ide
         run: npm test
