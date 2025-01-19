@@ -1,4 +1,4 @@
-name: frontendBuild
+name: Frontend
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-       
+
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
@@ -23,12 +23,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: "Installing Dependencies"
-      run: npm i
-    - name: "Building the Frontend"
-      run: npm run build   
+      run: npm i 
+    - name: "Building the frontend"
+      run: npm run build
 
-  unit-tests:
-
+  unit-test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -42,7 +41,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: "Installing Dependencies for test"
-      run: npm i
-    - name: "Testing the Frontend"
-      run: npm run test   
+    - name: "Installing Dependencies"
+      run: npm i 
+    - name: "Testinging the frontend"
+      run: npm run test
