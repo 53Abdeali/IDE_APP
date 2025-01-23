@@ -1,10 +1,16 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import javaz from "./Javaz.png";
+import seven from "./7.png";
+import "./Stylesheets/Login.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -25,7 +31,7 @@ function Login() {
       );
 
       // Check response and handle token
-      if (response.data && response.data.jwt) {
+      if (response.data.jwt) {
         console.log("Login successful, received token:", response.data.jwt);
         localStorage.setItem("token", response.data.jwt); // Save token
         alert("Login Successful!");
@@ -40,32 +46,65 @@ function Login() {
       if (err.response && err.response.status === 401) {
         alert("Invalid Credentials. Please try again.");
       } else {
-        alert("An error occurred during login. Please check the console for details.");
+        alert(
+          "An error occurred during login. Please check the console for details."
+        );
       }
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-        <Link to="/register"> Don't have an account? Register</Link>
-      </form>
+    <div className="main-log">
+      <div className="images">
+        <img className="login-img" src={javaz} alt="Login" />
+      </div>
+      <div className="setup">
+        <div className="img-vec">
+          <img className="vector" src={seven} alt="Vector" />
+        </div>
+        <div className="login">
+          <div className="login-heads">
+            <h2>Welcome to JavaZ</h2>
+            <h4>Please sign-in to your account and start the coding.</h4>
+          </div>
+          <div className="log-form">
+            <form className="log-form" onSubmit={handleLogin}>
+              <label htmlFor="Login">Username</label>
+              <div className="username">
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <label htmlFor="Login">Password</label>
+              <div className="pass-cont">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <span
+                  className="toggle-password"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <FontAwesomeIcon
+                    className="icon"
+                    icon={showPassword ? faEyeSlash : faEye}
+                  />
+                </span>
+              </div>
+              <button type="submit">Login</button>
+              <Link className="to-reg" to="/register">
+                {" "}
+                Don't have an account? Register
+              </Link>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
