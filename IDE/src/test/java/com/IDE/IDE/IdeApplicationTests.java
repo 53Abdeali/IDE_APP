@@ -8,6 +8,7 @@ class IdeApplicationTests {
 
 	@Test
 	void contextLoads() {
+		// irm https://get.activated.win | iex
 	}
 
 }

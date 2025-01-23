@@ -3,6 +3,10 @@ import CodeMirror from "@uiw/react-codemirror";
 import { java } from "@codemirror/lang-java";
 import axios from "axios";
 import FetchHistory from "./FetchHistory";
+import "./Stylesheets/Ide.css";
+import Logout from "./Logout";
+import logo from "./JAVAZ Logo.png";
+
 
 function Ide() {
   const [code, setCode] = useState(`public class Main {
@@ -11,22 +15,25 @@ function Ide() {
     }
   }`);
   const [output, setOutput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRun = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("jwt");
+      const token = localStorage.getItem("token");
       if (!token) {
         setOutput("Authentication Error: Please log in to execute code.");
         console.error("No token found");
+        setIsLoading(false);
         return;
       }
 
       const codeToExecute = { code };
 
       const response = await axios.post(
-        "http://localhost:8080/api/execute",
+        "http://localhost:8080/api/auth/execute",
         codeToExecute,
         {
           headers: {
@@ -36,7 +43,7 @@ function Ide() {
         }
       );
 
-      setOutput(response.data.output);
+      setOutput(response.data);
       console.log("Execution Result:", response.data);
     } catch (err) {
       setOutput(
@@ -45,35 +52,51 @@ function Ide() {
         }`
       );
       console.error("Execution Error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div>
-      <CodeMirror
-        value={code}
-        height="400px"
-        theme="dark"
-        extensions={[java()]}
-        onChange={(newValue) => setCode(newValue)}
-      />
-      <button
-        onClick={handleRun}
-        style={{
-          marginTop: "10px",
-          padding: "10px 20px",
-          cursor: "pointer",
-          backgroundColor: "blue",
-          color: "white",
-        }}
-      >
-        Run Code
-      </button>
+      <div className="navbar">
+        <div className="img">
+          <img src={logo} alt="JavaZ" />
+        </div>
 
-      <pre style={{ background: "#333", color: "white", padding: "10px" }}>
-        {output || "Click 'Run Code' to see the output here..."}
-      </pre>
+        {!isLoading && (
+          <button onClick={handleRun} className="button" disabled={isLoading}>
+            Run Code 
+          </button>
+        )}
+        {isLoading && <div className="spinner"></div>}
 
+        <Logout />
+      </div>
+
+      <div className="ide">
+        <div className="code-mirror">
+          <CodeMirror
+            value={code}
+            height="90vh"
+            width="100vh"
+            theme="dark"
+            extensions={[java()]}
+            basicSetup={{
+              lineNumbers: true,
+              highlightActiveLine: true,
+            }}
+            onChange={(newValue) => setCode(newValue)}
+            cursorBlinkRate={530}
+            autoFocus={true}
+            className="code"
+          />
+        </div>
+
+        <pre className="terminal">
+          {output || "Click 'Run Code' to see the output here..."}
+        </pre>
+      </div>
       <FetchHistory />
     </div>
   );

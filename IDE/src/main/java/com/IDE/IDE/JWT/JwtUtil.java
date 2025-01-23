@@ -10,7 +10,6 @@ import java.security.Key;
 
 @Component
 public class JwtUtil {
-    private String secretKey = "secret";
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @SuppressWarnings("deprecation")
@@ -26,7 +25,12 @@ public class JwtUtil {
 
     @SuppressWarnings("deprecation")
     private Claims extractClaims(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    }
+
+    public boolean isTokenValid(String token, String username) {
+        final String extractedUsername = extractUsername(token);
+        return extractedUsername.equals(username) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {
